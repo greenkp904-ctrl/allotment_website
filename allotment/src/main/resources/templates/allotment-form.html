@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Allotment Form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white font-sans flex flex-col items-center p-8">
+
+<h2 class="text-3xl font-bold mb-6">Select Your Quota</h2>
+
+<form th:action="@{/allotment-form}" method="post" class="flex flex-col items-center gap-4">
+
+    <label class="flex items-center gap-2">
+        <input type="radio" name="quota" value="ksrtc" class="accent-indigo-500">
+        KSRTC Quota
+    </label>
+
+    <label class="flex items-center gap-2">
+        <input type="radio" name="quota" value="nri" class="accent-indigo-500">
+        NRI Quota
+    </label>
+
+    <button type="submit" class="mt-4 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-lg font-semibold">
+        Proceed
+    </button>
+
+    <p th:if="${error}" class="text-red-500 mt-2" th:text="${error}"></p>
+</form>
+
+</body>
+</html>

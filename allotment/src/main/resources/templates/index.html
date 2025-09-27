@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sree Chitra Thirunal College of Engineering - Allotment Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .hero {
+            background: url('/images/college.jpg') no-repeat center center/cover;
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+        .overlay {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.5));
+            position: absolute;
+            top: 0; left: 0;
+            height: 100%; width: 100%;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 10;
+        }
+        .glass-card {
+            backdrop-filter: blur(12px);
+            background: rgba(40, 40, 40, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white font-sans">
+
+<!-- Navbar -->
+<nav class="flex justify-between items-center p-4 bg-gray-800/80 shadow-lg fixed top-0 w-full z-20 backdrop-blur">
+    <div class="space-x-4">
+        <a th:href="@{/}" class="hover:text-indigo-400">Home</a>
+        <a th:href="@{/login}" class="hover:text-indigo-400">Sign In</a>
+        <a th:href="@{/register}" class="hover:text-indigo-400">Sign Up</a>
+        <a th:href="@{/allotment}" class="hover:text-indigo-400">Allotment Form</a>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="overlay"></div>
+    <div class="hero-content px-4">
+        <h2 class="text-4xl md:text-6xl font-extrabold mb-4 drop-shadow-lg">
+            Sree Chitra Thirunal College of Engineering
+        </h2>
+        <p class="text-lg md:text-2xl text-gray-200 max-w-3xl mx-auto mb-6">
+            KSRTC & NRI Quota Allotment Portal
+        </p>
+    </div>
+</section>
+
+<!-- About College -->
+<section class="px-6 py-20 max-w-5xl mx-auto text-center">
+    <h3 class="text-3xl font-bold text-indigo-400 mb-6">About the College</h3>
+    <p class="text-gray-300 leading-relaxed text-lg">
+        Established in 1995, Sree Chitra Thirunal College of Engineering is one of Kerala’s leading
+        engineering institutions, known for academic excellence, innovation, and student-centered growth.
+        The college offers undergraduate and postgraduate programs in multiple engineering streams,
+        fostering a strong culture of research and technical advancement.
+    </p>
+</section>
+
+<!-- Quota Section -->
+<section class="px-6 pb-20 max-w-6xl mx-auto grid md:grid-cols-2 gap-10">
+    <!-- KSRTC Quota -->
+    <div class="glass-card p-8 rounded-2xl shadow-xl">
+        <h3 class="text-2xl font-bold text-indigo-400 mb-4">KSRTC Quota</h3>
+        <p class="text-gray-200 leading-relaxed">
+            The KSRTC quota provides admission opportunities for children of Kerala State Road Transport
+            Corporation employees, maintaining fair allotment and academic standards.
+        </p>
+    </div>
+
+    <!-- NRI Quota -->
+    <div class="glass-card p-8 rounded-2xl shadow-xl">
+        <h3 class="text-2xl font-bold text-indigo-400 mb-4">NRI Quota</h3>
+        <p class="text-gray-200 leading-relaxed">
+            The NRI quota offers admission to students sponsored by Non-Resident Indians, maintaining strong
+            global Malayali community ties and access to high-quality technical education.
+        </p>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-800 py-6 text-center text-gray-400 text-sm">
+    © Sree Chitra Thirunal College of Engineering | All Rights Reserved
+</footer>
+
+</body>
+</html>

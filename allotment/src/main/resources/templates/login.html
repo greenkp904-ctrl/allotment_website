@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign In - Allotment Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+          background: url('/images/college.jpg') no-repeat center center fixed;
+          background-size: cover;
+        }
+        .glass-card {
+          backdrop-filter: blur(16px);
+          background: rgba(0, 0, 0, 0.55);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+    </style>
+</head>
+<body class="h-screen flex items-center justify-center text-white">
+<div class="glass-card p-10 rounded-2xl shadow-xl w-full max-w-md">
+    <h2 class="text-3xl font-bold text-center mb-6 text-indigo-400">Sign In</h2>
+
+    <form action="/login" method="post" class="space-y-5">
+        <div>
+            <label class="block mb-1 text-gray-300">Email</label>
+            <input type="email" name="email"
+                   class="w-full p-3 rounded-lg bg-gray-800/70 border border-gray-600 focus:ring-2 focus:ring-indigo-400"
+                   required>
+        </div>
+        <div>
+            <label class="block mb-1 text-gray-300">Password</label>
+            <input type="password" name="password"
+                   class="w-full p-3 rounded-lg bg-gray-800/70 border border-gray-600 focus:ring-2 focus:ring-indigo-400"
+                   required>
+        </div>
+        <button type="submit"
+                class="w-full py-3 rounded-lg bg-indigo-500 hover:bg-indigo-600 font-semibold transition">
+            Sign In
+        </button>
+    </form>
+
+    <div class="mt-6 text-center text-gray-300">
+        <p>Don’t have an account?
+            <a href="/register" class="text-indigo-400 hover:underline">Sign Up</a>
+        </p>
+        <p class="mt-2">
+            <a href="/forgot-password" class="text-indigo-400 hover:underline">Forgot Password?</a>
+        </p>
+    </div>
+</div>
+</body>
+</html>

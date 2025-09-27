@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>KSRTC Result</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .glass-card {
+            backdrop-filter: blur(12px);
+            background: rgba(40, 40, 40, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        body {
+            background: url('/images/college.jpg') no-repeat center center/cover;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white font-sans p-8">
+<h2 class="text-3xl font-bold mb-6 text-indigo-400 text-center">KSRTC Allotment Results</h2>
+
+<div class="grid md:grid-cols-2 gap-6">
+    <div class="glass-card p-4 rounded-xl" th:each="student : ${allotments}">
+        <p><span class="font-bold">Name:</span> <span th:text="${student.name}"></span></p>
+        <p><span class="font-bold">KSRTC ID:</span> <span th:text="${student.ksrtcId}"></span></p>
+        <p><span class="font-bold">Bus Route:</span> <span th:text="${student.route}"></span></p>
+    </div>
+</div>
+</body>
+</html>
