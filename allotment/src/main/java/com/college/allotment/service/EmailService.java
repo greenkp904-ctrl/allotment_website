@@ -11,12 +11,14 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    // Send simple email
-    public void sendEmail(String to, String subject, String body) {
+    public void sendEmail(String to, String subject, String body) { // 👈 method name & parameters
         SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("your_email@gmail.com"); // replace with your Gmail
         message.setTo(to);
         message.setSubject(subject);
         message.setText(body);
+
         mailSender.send(message);
+        System.out.println("Mail sent successfully!");
     }
 }

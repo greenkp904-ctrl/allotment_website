@@ -4,25 +4,45 @@
     <meta charset="UTF-8">
     <title>Allotment Form</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function showFields() {
+            const quota = document.querySelector('input[name="quota"]:checked').value;
+            document.getElementById('ksrtcFields').style.display = quota === 'ksrtc' ? 'block' : 'none';
+            document.getElementById('nriFields').style.display = quota === 'nri' ? 'block' : 'none';
+        }
+    </script>
 </head>
 <body class="bg-gray-900 text-white font-sans flex flex-col items-center p-8">
 
 <h2 class="text-3xl font-bold mb-6">Select Your Quota</h2>
 
-<form th:action="@{/allotment-form}" method="post" class="flex flex-col items-center gap-4">
+<form th:action="@{/allotment-form}" method="post" class="flex flex-col gap-4 w-full max-w-md">
+    <input type="hidden" name="userId" th:value="${user.id}" />
 
     <label class="flex items-center gap-2">
-        <input type="radio" name="quota" value="ksrtc" class="accent-indigo-500">
+        <input type="radio" name="quota" value="ksrtc" class="accent-indigo-500" onclick="showFields()">
         KSRTC Quota
     </label>
 
     <label class="flex items-center gap-2">
-        <input type="radio" name="quota" value="nri" class="accent-indigo-500">
+        <input type="radio" name="quota" value="nri" class="accent-indigo-500" onclick="showFields()">
         NRI Quota
     </label>
 
+    <!-- KSRTC Fields -->
+    <div id="ksrtcFields" style="display:none;" class="flex flex-col gap-2 mt-4">
+        <input type="text" name="ksrtcId" placeholder="KSRTC ID" class="p-2 rounded text-black">
+        <input type="text" name="busRoute" placeholder="Bus Route" class="p-2 rounded text-black">
+    </div>
+
+    <!-- NRI Fields -->
+    <div id="nriFields" style="display:none;" class="flex flex-col gap-2 mt-4">
+        <input type="text" name="passportNumber" placeholder="Passport Number" class="p-2 rounded text-black">
+        <input type="text" name="country" placeholder="Country" class="p-2 rounded text-black">
+    </div>
+
     <button type="submit" class="mt-4 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-lg font-semibold">
-        Proceed
+        Submit
     </button>
 
     <p th:if="${error}" class="text-red-500 mt-2" th:text="${error}"></p>

@@ -22,7 +22,7 @@ public class AllotmentController {
     @GetMapping("/allotment")
     public String allotmentPage(@RequestParam Long userId, Model model) {
         User user = userRepo.findById(userId).orElse(null);
-        model.addAttribute("user",user);
+        model.addAttribute("user", user);
         return "allotment";
     }
 
@@ -35,7 +35,7 @@ public class AllotmentController {
         form.setBusRoute(busRoute);
         form.setUser(userRepo.findById(userId).orElse(null));
         allotmentService.submitKsrtcForm(form);
-        return "redirect:/allotment?userId="+userId;
+        return "redirect:/allotment?userId=" + userId;
     }
 
     @PostMapping("/allotment/nri")
@@ -47,6 +47,32 @@ public class AllotmentController {
         form.setCountry(country);
         form.setUser(userRepo.findById(userId).orElse(null));
         allotmentService.submitNriForm(form);
-        return "redirect:/allotment?userId="+userId;
+        return "redirect:/allotment?userId=" + userId;
+    }
+
+    // ✅ Add this new method here inside the same class
+    @PostMapping("/allotment-form")
+    public String submitAllotmentForm(@RequestParam Long userId,
+                                      @RequestParam String quota,
+                                      @RequestParam(required = false) String ksrtcId,
+                                      @RequestParam(required = false) String busRoute,
+                                      @RequestParam(required = false) String passportNumber,
+                                      @RequestParam(required = false) String country) {
+
+        if ("ksrtc".equals(quota)) {
+            KsrtcForm form = new KsrtcForm();
+            form.setKsrtcId(ksrtcId);
+            form.setBusRoute(busRoute);
+            form.setUser(userRepo.findById(userId).orElse(null));
+            allotmentService.submitKsrtcForm(form);
+        } else if ("nri".equals(quota)) {
+            NriForm form = new NriForm();
+            form.setPassportNumber(passportNumber);
+            form.setCountry(country);
+            form.setUser(userRepo.findById(userId).orElse(null));
+            allotmentService.submitNriForm(form);
+        }
+
+        return "redirect:/allotment?userId=" + userId;
     }
 }
