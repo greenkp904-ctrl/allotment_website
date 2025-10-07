@@ -1,0 +1,11 @@
+# Use Maven to build the application
+FROM maven:3.8.6-openjdk-17-slim AS build
+WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
+
+# Use OpenJDK to run the application
+FROM openjdk:17-slim
+WORKDIR /app
+COPY --from=build /app/target/allotment-0.0.1-SNAPSHOT.jar /app/app.jar
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
