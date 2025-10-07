@@ -4,49 +4,111 @@
     <meta charset="UTF-8">
     <title>Allotment Form</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        function showFields() {
-            const quota = document.querySelector('input[name="quota"]:checked').value;
-            document.getElementById('ksrtcFields').style.display = quota === 'ksrtc' ? 'block' : 'none';
-            document.getElementById('nriFields').style.display = quota === 'nri' ? 'block' : 'none';
-        }
-    </script>
 </head>
-<body class="bg-gray-900 text-white font-sans flex flex-col items-center p-8">
+<body class="bg-gray-100 min-h-screen flex justify-center items-center">
+<div class="bg-white shadow-lg rounded-xl p-8 w-full max-w-3xl">
+    <h1 class="text-3xl font-bold text-indigo-600 text-center mb-6">Allotment Form</h1>
 
-<h2 class="text-3xl font-bold mb-6">Select Your Quota</h2>
+    <!-- Step 1: Choose quota(s) -->
+    <form th:action="@{/allotment}" method="post" th:if="${ksrtcSelected == null}">
+        <input type="hidden" name="userId" th:value="${user.id}" />
 
-<form th:action="@{/allotment-form}" method="post" class="flex flex-col gap-4 w-full max-w-md">
-    <input type="hidden" name="userId" th:value="${user.id}" />
+        <p class="text-lg mb-4">Select applicable quota(s):</p>
 
-    <label class="flex items-center gap-2">
-        <input type="radio" name="quota" value="ksrtc" class="accent-indigo-500" onclick="showFields()">
-        KSRTC Quota
-    </label>
+        <label class="block mb-2">
+            <input type="checkbox" name="ksrtc" /> KSRTC Quota
+        </label>
+        <label class="block mb-6">
+            <input type="checkbox" name="nri" /> NRI Quota
+        </label>
 
-    <label class="flex items-center gap-2">
-        <input type="radio" name="quota" value="nri" class="accent-indigo-500" onclick="showFields()">
-        NRI Quota
-    </label>
+        <button type="submit"
+                class="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700">
+            Next
+        </button>
+    </form>
 
-    <!-- KSRTC Fields -->
-    <div id="ksrtcFields" style="display:none;" class="flex flex-col gap-2 mt-4">
-        <input type="text" name="ksrtcId" placeholder="KSRTC ID" class="p-2 rounded text-black">
-        <input type="text" name="busRoute" placeholder="Bus Route" class="p-2 rounded text-black">
-    </div>
+    <!-- Step 2: Form for selected quotas -->
+    <form th:action="@{/allotment-form}" method="post" th:if="${ksrtcSelected != null}">
+        <input type="hidden" name="userId" th:value="${user.id}" />
 
-    <!-- NRI Fields -->
-    <div id="nriFields" style="display:none;" class="flex flex-col gap-2 mt-4">
-        <input type="text" name="passportNumber" placeholder="Passport Number" class="p-2 rounded text-black">
-        <input type="text" name="country" placeholder="Country" class="p-2 rounded text-black">
-    </div>
+        <!-- Personal Details -->
+        <div class="mt-6">
+            <h2 class="text-xl font-semibold text-indigo-500 mb-3">Personal Details</h2>
 
-    <button type="submit" class="mt-4 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-lg font-semibold">
-        Submit
-    </button>
+            <input type="text" name="candidateName" placeholder="Candidate's Name"
+                   class="w-full border p-2 rounded mb-3" required />
 
-    <p th:if="${error}" class="text-red-500 mt-2" th:text="${error}"></p>
-</form>
+            <input type="text" name="fatherName" placeholder="Father's Name"
+                   class="w-full border p-2 rounded mb-3" required />
 
+            <input type="text" name="motherName" placeholder="Mother's Name"
+                   class="w-full border p-2 rounded mb-3" required />
+
+            <textarea name="address" placeholder="Address"
+                      class="w-full border p-2 rounded mb-3" rows="3" required></textarea>
+        </div>
+
+        <!-- Educational Details -->
+        <div class="mt-8">
+            <h2 class="text-xl font-semibold text-indigo-500 mb-3">Educational Details</h2>
+
+            <input type="text" name="lastSchool" placeholder="Last School Studied"
+                   class="w-full border p-2 rounded mb-3" required />
+
+            <label class="block mb-4">
+                <span class="text-gray-700">Board of Study</span>
+                <select name="board" class="w-full border p-2 rounded mt-1" required>
+                    <option value="">Select Board</option>
+                    <option value="CBSE">CBSE</option>
+                    <option value="ICSE">ICSE</option>
+                    <option value="Kerala">Kerala Board</option>
+                </select>
+            </label>
+
+            <!-- KSRTC Educational Fields -->
+            <div th:if="${ksrtcSelected}">
+                <h3 class="text-lg font-semibold text-indigo-500 mt-6 mb-3">KSRTC Quota</h3>
+
+                <input type="text" name="ksrtcId" placeholder="KSRTC Employee ID"
+                       class="w-full border p-2 rounded mb-3" />
+
+                <input type="text" name="busRoute" placeholder="Bus Route"
+                       class="w-full border p-2 rounded mb-3" />
+
+                <input type="number" name="keamRank" placeholder="KEAM Rank"
+                       class="w-full border p-2 rounded mb-3" />
+            </div>
+
+            <!-- NRI Educational Fields -->
+            <div th:if="${nriSelected}">
+                <h3 class="text-lg font-semibold text-indigo-500 mt-6 mb-3">NRI Quota</h3>
+
+                <input type="text" name="passportNumber" placeholder="Passport Number"
+                       class="w-full border p-2 rounded mb-3" />
+
+                <input type="text" name="country" placeholder="Country"
+                       class="w-full border p-2 rounded mb-3" />
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <input type="number" name="physicsMarks" placeholder="Physics Marks"
+                           class="border p-2 rounded" />
+                    <input type="number" name="chemistryMarks" placeholder="Chemistry Marks"
+                           class="border p-2 rounded" />
+                    <input type="number" name="mathsMarks" placeholder="Mathematics Marks"
+                           class="border p-2 rounded" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="text-center mt-10">
+            <button type="submit"
+                    class="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700">
+                Submit
+            </button>
+        </div>
+    </form>
+</div>
 </body>
 </html>

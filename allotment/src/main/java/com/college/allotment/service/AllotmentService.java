@@ -55,7 +55,7 @@ public class AllotmentService {
     }
 
     public List<KsrtcForm> getAllKsrtcForms() {
-        return ksrtcFormRepository.findAll();
+        return ksrtcFormRepository.findAll(); // ✅ use instance, not class
     }
 
     // ---------------- NRI FORM ----------------
@@ -76,14 +76,18 @@ public class AllotmentService {
 
     public Result publishResult(Result result) {
         Result savedResult = resultRepository.save(result);
+
         if (savedResult.isPublished()) {
-            emailService.sendEmail(
-                    savedResult.getUser().getEmail(),
-                    "Allotment Result Published",
-                    "Your allotment seat: " + savedResult.getAllocatedSeat() +
-                            " for quota: " + savedResult.getQuota()
-            );
+            String subject = "Allotment Result Published";
+            String body = "Dear " + savedResult.getUser().getName() + ",\n\n"
+                    + "Your allotment result has been published.\n"
+                    + "Quota: " + savedResult.getQuota() + "\n"
+                    + "Allocated Seat: " + savedResult.getAllocatedSeat() + "\n\n"
+                    + "Thank you,\nCollege Allotment Team";
+
+            emailService.sendEmail(savedResult.getUser().getEmail(), subject, body);
         }
+
         return savedResult;
     }
 
@@ -95,18 +99,32 @@ public class AllotmentService {
         return resultRepository.findAll();
     }
 
-    // ---------------- FORGOT PASSWORD ----------------
+    // ---------------- PASSWORD RESET ----------------
 
     public void resetPassword(String email, String newPassword) {
         Optional<User> userOpt = userRepository.findByEmail(email);
+
         userOpt.ifPresent(user -> {
             user.setPassword(newPassword);
             userRepository.save(user);
-            emailService.sendEmail(
-                    email,
-                    "Password Reset",
-                    "Your new password is: " + newPassword
-            );
+
+            String subject = "Password Reset Successful";
+            String body = "Dear " + user.getName() + ",\n\n"
+                    + "Your password has been successfully reset.\n"
+                    + "New Password: " + newPassword + "\n\n"
+                    + "If you did not request this change, please contact support immediately.\n\n"
+                    + "Regards,\nCollege Allotment System";
+
+            emailService.sendEmail(email, subject, body);
         });
+    }
+
+    // ---------------- UTILITIES ----------------
+
+    public void deleteUser(Long userId) {
+        ksrtcFormRepository.findByUserId(userId).ifPresent(ksrtcFormRepository::delete);
+        nriFormRepository.findByUserId(userId).ifPresent(nriFormRepository::delete);
+        resultRepository.findByUserId(userId).ifPresent(resultRepository::delete);
+        userRepository.deleteById(userId);
     }
 }

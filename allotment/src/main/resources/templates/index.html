@@ -42,7 +42,7 @@
         <a th:href="@{/}" class="hover:text-indigo-400">Home</a>
         <a th:href="@{/login}" class="hover:text-indigo-400">Sign In</a>
         <a th:href="@{/register}" class="hover:text-indigo-400">Sign Up</a>
-        <a th:href="@{/allotment}" class="hover:text-indigo-400">Allotment Form</a>
+        <a th:href="@{/allotment(userId=${user.id})}" class="hover:text-indigo-400">Allotment Form</a>
     </div>
 </nav>
 
