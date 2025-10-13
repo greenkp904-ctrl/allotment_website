@@ -5,10 +5,9 @@ import com.college.allotment.repository.UserRepository;
 import com.college.allotment.service.AllotmentService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.*;
 
 @Controller
 public class AllotmentController {
@@ -21,53 +20,55 @@ public class AllotmentController {
         this.userRepo = userRepo;
     }
 
-    // Step 1: Show the initial quota selection
+    // -------------------- Show Allotment Form --------------------
     @GetMapping("/allotment")
-    public String showAllotmentPage(@RequestParam Long userId, Model model) {
+    public String showAllotmentPage(@RequestParam Long userId,
+                                    @RequestParam(value = "error", required = false) String error,
+                                    Model model) {
         User user = userRepo.findById(userId).orElse(null);
         model.addAttribute("user", user);
+
+        // List of available branches (full form)
+        List<String> branches = Arrays.asList(
+                "Computer Science and Engineering",
+                "Computer Science (Artificial Intelligence and Machine Learning) Engineering",
+                "Electronics and Communication Engineering",
+                "Mechanical Engineering",
+                "Automobile Engineering",
+                "Biotechnology Engineering"
+        );
+        model.addAttribute("branches", branches);
+
+        if (error != null) {
+            model.addAttribute("errorMessage", "⚠️ Please select up to 6 unique options.");
+        }
+
         return "allotment-form";
     }
 
-    // Step 2: Handle the quota selection and re-render form
+    // -------------------- Handle Form Submission --------------------
     @PostMapping("/allotment")
-    public String showQuotaForm(@RequestParam Long userId,
-                                @RequestParam(required = false) String ksrtc,
-                                @RequestParam(required = false) String nri,
-                                Model model) {
-        User user = userRepo.findById(userId).orElse(null);
-        model.addAttribute("user", user);
-        model.addAttribute("ksrtcSelected", ksrtc != null);
-        model.addAttribute("nriSelected", nri != null);
-        return "allotment-form";
-    }
-
-    // Step 3: Handle the final submission
-    @PostMapping("/allotment-form")
     public String submitAllotmentForm(@RequestParam Long userId,
-                                      @RequestParam(required = false) String ksrtcId,
-                                      @RequestParam(required = false) String busRoute,
-                                      @RequestParam(required = false) String passportNumber,
-                                      @RequestParam(required = false) String country) {
-
+                                      @RequestParam(value = "options", required = false) List<String> options) {
         User user = userRepo.findById(userId).orElse(null);
 
-        if (ksrtcId != null && !ksrtcId.isBlank()) {
-            KsrtcForm form = new KsrtcForm();
-            form.setKsrtcId(ksrtcId);
-            form.setBusRoute(busRoute);
-            form.setUser(user);
-            allotmentService.submitKsrtcForm(form);
+        if (user == null) {
+            return "redirect:/dashboard?error=userNotFound";
         }
 
-        if (passportNumber != null && !passportNumber.isBlank()) {
-            NriForm form = new NriForm();
-            form.setPassportNumber(passportNumber);
-            form.setCountry(country);
-            form.setUser(user);
-            allotmentService.submitNriForm(form);
+        // Validation: must select 1–6 unique options
+        if (options == null || options.isEmpty() || options.size() > 6) {
+            return "redirect:/allotment?userId=" + userId + "&error=true";
         }
 
-        return "redirect:/allotment?userId=" + userId;
+        Set<String> uniqueOptions = new HashSet<>(options);
+        if (uniqueOptions.size() < options.size()) {
+            return "redirect:/allotment?userId=" + userId + "&error=true";
+        }
+
+        // Save the selected options
+        allotmentService.saveSelectedOptions(user, new ArrayList<>(uniqueOptions));
+
+        return "redirect:/result?userId=" + userId;
     }
 }

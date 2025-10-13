@@ -1,40 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Sign In - Allotment Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-          background: url('/images/college.jpg') no-repeat center center fixed;
-          background-size: cover;
+            background: url('/images/college.jpg') no-repeat center fixed;
+            background-size: cover;
         }
         .glass-card {
-          backdrop-filter: blur(16px);
-          background: rgba(0, 0, 0, 0.55);
-          border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(16px);
+            background: rgba(0, 0, 0, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
     </style>
 </head>
 <body class="h-screen flex items-center justify-center text-white">
+
 <div class="glass-card p-10 rounded-2xl shadow-xl w-full max-w-md">
     <h2 class="text-3xl font-bold text-center mb-6 text-indigo-400">Sign In</h2>
 
-    <form action="/login" method="post" class="space-y-5">
+    <!-- ✅ Error message (shown only when credentials are invalid) -->
+    <div th:if="${error}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+        <strong th:text="${error}"></strong>
+    </div>
+
+
+    <form th:action="@{/login}" method="post" class="space-y-5">
         <div>
             <label class="block mb-1 text-gray-300">Email</label>
             <input type="email" name="email"
-                   class="w-full p-3 rounded-lg bg-gray-800/70 border border-gray-600 focus:ring-2 focus:ring-indigo-400"
+                   th:value="${enteredEmail}"
+                   class="w-full p-3 rounded-lg bg-gray-800/70 border border-gray-600
+                          focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+                   placeholder="Enter your email"
                    required>
         </div>
         <div>
             <label class="block mb-1 text-gray-300">Password</label>
             <input type="password" name="password"
-                   class="w-full p-3 rounded-lg bg-gray-800/70 border border-gray-600 focus:ring-2 focus:ring-indigo-400"
+                   class="w-full p-3 rounded-lg bg-gray-800/70 border border-gray-600
+                          focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+                   placeholder="Enter your password"
                    required>
         </div>
+
         <button type="submit"
-                class="w-full py-3 rounded-lg bg-indigo-500 hover:bg-indigo-600 font-semibold transition">
+                class="w-full py-3 rounded-lg bg-indigo-500 hover:bg-indigo-600
+                       font-semibold transition duration-200 ease-in-out">
             Sign In
         </button>
     </form>
@@ -48,5 +62,6 @@
         </p>
     </div>
 </div>
+
 </body>
 </html>

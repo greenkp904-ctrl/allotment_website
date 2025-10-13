@@ -9,27 +9,7 @@
 <div class="bg-white shadow-lg rounded-xl p-8 w-full max-w-3xl">
     <h1 class="text-3xl font-bold text-indigo-600 text-center mb-6">Allotment Form</h1>
 
-    <!-- Step 1: Choose quota(s) -->
-    <form th:action="@{/allotment}" method="post" th:if="${ksrtcSelected == null}">
-        <input type="hidden" name="userId" th:value="${user.id}" />
-
-        <p class="text-lg mb-4">Select applicable quota(s):</p>
-
-        <label class="block mb-2">
-            <input type="checkbox" name="ksrtc" /> KSRTC Quota
-        </label>
-        <label class="block mb-6">
-            <input type="checkbox" name="nri" /> NRI Quota
-        </label>
-
-        <button type="submit"
-                class="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700">
-            Next
-        </button>
-    </form>
-
-    <!-- Step 2: Form for selected quotas -->
-    <form th:action="@{/allotment-form}" method="post" th:if="${ksrtcSelected != null}">
+    <form th:action="@{/allotment-form}" method="post">
         <input type="hidden" name="userId" th:value="${user.id}" />
 
         <!-- Personal Details -->
@@ -65,40 +45,94 @@
                     <option value="Kerala">Kerala Board</option>
                 </select>
             </label>
+        </div>
 
-            <!-- KSRTC Educational Fields -->
-            <div th:if="${ksrtcSelected}">
-                <h3 class="text-lg font-semibold text-indigo-500 mt-6 mb-3">KSRTC Quota</h3>
+        <!-- Option Registration -->
+        <div class="mt-10">
+            <h2 class="text-xl font-semibold text-indigo-500 mb-3">Option Registration</h2>
+            <p class="text-gray-600 mb-3">Select your preferred branches (maximum 6 options, one per dropdown):</p>
 
-                <input type="text" name="ksrtcId" placeholder="KSRTC Employee ID"
-                       class="w-full border p-2 rounded mb-3" />
+            <div class="grid grid-cols-1 gap-4">
+                <label>
+                    <span class="text-gray-700 font-medium">Option 1</span>
+                    <select name="option1" class="w-full border p-2 rounded mt-1" required>
+                        <option value="">Select Branch</option>
+                        <option value="Computer Science and Engineering">Computer Science and Engineering</option>
+                        <option value="Computer Science and Engineering (AI and ML)">Computer Science and Engineering (AI and ML)</option>
+                        <option value="Electronics and Communication Engineering">Electronics and Communication Engineering</option>
+                        <option value="Mechanical Engineering">Mechanical Engineering</option>
+                        <option value="Automobile Engineering">Automobile Engineering</option>
+                        <option value="Biotechnology Engineering">Biotechnology Engineering</option>
+                    </select>
+                </label>
 
-                <input type="text" name="busRoute" placeholder="Bus Route"
-                       class="w-full border p-2 rounded mb-3" />
+                <label>
+                    <span class="text-gray-700 font-medium">Option 2</span>
+                    <select name="option2" class="w-full border p-2 rounded mt-1">
+                        <option value="">Select Branch</option>
+                        <option value="Computer Science and Engineering">Computer Science and Engineering</option>
+                        <option value="Computer Science and Engineering (AI and ML)">Computer Science and Engineering (AI and ML)</option>
+                        <option value="Electronics and Communication Engineering">Electronics and Communication Engineering</option>
+                        <option value="Mechanical Engineering">Mechanical Engineering</option>
+                        <option value="Automobile Engineering">Automobile Engineering</option>
+                        <option value="Biotechnology Engineering">Biotechnology Engineering</option>
+                    </select>
+                </label>
 
-                <input type="number" name="keamRank" placeholder="KEAM Rank"
-                       class="w-full border p-2 rounded mb-3" />
+                <label>
+                    <span class="text-gray-700 font-medium">Option 3</span>
+                    <select name="option3" class="w-full border p-2 rounded mt-1">
+                        <option value="">Select Branch</option>
+                        <option value="Computer Science and Engineering">Computer Science and Engineering</option>
+                        <option value="Computer Science and Engineering (AI and ML)">Computer Science and Engineering (AI and ML)</option>
+                        <option value="Electronics and Communication Engineering">Electronics and Communication Engineering</option>
+                        <option value="Mechanical Engineering">Mechanical Engineering</option>
+                        <option value="Automobile Engineering">Automobile Engineering</option>
+                        <option value="Biotechnology Engineering">Biotechnology Engineering</option>
+                    </select>
+                </label>
+
+                <label>
+                    <span class="text-gray-700 font-medium">Option 4</span>
+                    <select name="option4" class="w-full border p-2 rounded mt-1">
+                        <option value="">Select Branch</option>
+                        <option value="Computer Science and Engineering">Computer Science and Engineering</option>
+                        <option value="Computer Science and Engineering (AI and ML)">Computer Science and Engineering (AI and ML)</option>
+                        <option value="Electronics and Communication Engineering">Electronics and Communication Engineering</option>
+                        <option value="Mechanical Engineering">Mechanical Engineering</option>
+                        <option value="Automobile Engineering">Automobile Engineering</option>
+                        <option value="Biotechnology Engineering">Biotechnology Engineering</option>
+                    </select>
+                </label>
+
+                <label>
+                    <span class="text-gray-700 font-medium">Option 5</span>
+                    <select name="option5" class="w-full border p-2 rounded mt-1">
+                        <option value="">Select Branch</option>
+                        <option value="Computer Science and Engineering">Computer Science and Engineering</option>
+                        <option value="Computer Science and Engineering (AI and ML)">Computer Science and Engineering (AI and ML)</option>
+                        <option value="Electronics and Communication Engineering">Electronics and Communication Engineering</option>
+                        <option value="Mechanical Engineering">Mechanical Engineering</option>
+                        <option value="Automobile Engineering">Automobile Engineering</option>
+                        <option value="Biotechnology Engineering">Biotechnology Engineering</option>
+                    </select>
+                </label>
+
+                <label>
+                    <span class="text-gray-700 font-medium">Option 6</span>
+                    <select name="option6" class="w-full border p-2 rounded mt-1">
+                        <option value="">Select Branch</option>
+                        <option value="Computer Science and Engineering">Computer Science and Engineering</option>
+                        <option value="Computer Science and Engineering (AI and ML)">Computer Science and Engineering (AI and ML)</option>
+                        <option value="Electronics and Communication Engineering">Electronics and Communication Engineering</option>
+                        <option value="Mechanical Engineering">Mechanical Engineering</option>
+                        <option value="Automobile Engineering">Automobile Engineering</option>
+                        <option value="Biotechnology Engineering">Biotechnology Engineering</option>
+                    </select>
+                </label>
             </div>
 
-            <!-- NRI Educational Fields -->
-            <div th:if="${nriSelected}">
-                <h3 class="text-lg font-semibold text-indigo-500 mt-6 mb-3">NRI Quota</h3>
-
-                <input type="text" name="passportNumber" placeholder="Passport Number"
-                       class="w-full border p-2 rounded mb-3" />
-
-                <input type="text" name="country" placeholder="Country"
-                       class="w-full border p-2 rounded mb-3" />
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <input type="number" name="physicsMarks" placeholder="Physics Marks"
-                           class="border p-2 rounded" />
-                    <input type="number" name="chemistryMarks" placeholder="Chemistry Marks"
-                           class="border p-2 rounded" />
-                    <input type="number" name="mathsMarks" placeholder="Mathematics Marks"
-                           class="border p-2 rounded" />
-                </div>
-            </div>
+            <p class="text-sm text-gray-500 mt-2 italic">Each option should be unique. Please don’t repeat the same branch.</p>
         </div>
 
         <!-- Submit Button -->

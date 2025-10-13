@@ -3,6 +3,7 @@ package com.college.allotment.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "ksrtc_form")
 public class KsrtcForm {
 
     @Id
@@ -12,7 +13,7 @@ public class KsrtcForm {
     // ---------- User Relationship ----------
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;  // ✅ Now you can do form.setUser(user)
+    private User user;
 
     // ---------- Personal Details ----------
     private String candidateName;
@@ -28,6 +29,11 @@ public class KsrtcForm {
     // ---------- KSRTC Quota Specific ----------
     private String ksrtcId;
     private String busRoute;
+
+    // ---------- Ranking / Allotment Info ----------
+    private Integer rankPosition; // generated rank position in KSRTC list
+    private boolean allocated = false; // true if seat allocated
+    private String allocatedSeat; // optional: store seat/course name if applicable
 
     // ---------- Getters & Setters ----------
     public Long getId() {
@@ -116,5 +122,29 @@ public class KsrtcForm {
 
     public void setBusRoute(String busRoute) {
         this.busRoute = busRoute;
+    }
+
+    public Integer getRankPosition() {
+        return rankPosition;
+    }
+
+    public void setRankPosition(Integer rankPosition) {
+        this.rankPosition = rankPosition;
+    }
+
+    public boolean isAllocated() {
+        return allocated;
+    }
+
+    public void setAllocated(boolean allocated) {
+        this.allocated = allocated;
+    }
+
+    public String getAllocatedSeat() {
+        return allocatedSeat;
+    }
+
+    public void setAllocatedSeat(String allocatedSeat) {
+        this.allocatedSeat = allocatedSeat;
     }
 }

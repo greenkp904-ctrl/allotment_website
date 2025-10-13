@@ -3,6 +3,7 @@ package com.college.allotment.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "nri_form")
 public class NriForm {
 
     @Id
@@ -12,7 +13,7 @@ public class NriForm {
     // ---------- User Relationship ----------
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;  // ✅ now you can do form.setUser(user)
+    private User user;
 
     // ---------- Personal Details ----------
     private String candidateName;
@@ -30,6 +31,12 @@ public class NriForm {
     // ---------- NRI Quota Specific ----------
     private String passportNumber;
     private String country;
+
+    // ---------- Ranking & Allotment ----------
+    private double percentage;      // total % based on (physics+chemistry+math)/600 * 100
+    private Integer rankPosition;   // rank number in NRI list
+    private boolean allocated = false;
+    private String allocatedSeat;   // optional seat/course info
 
     // ---------- Getters & Setters ----------
     public Long getId() {
@@ -134,5 +141,37 @@ public class NriForm {
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public double getPercentage() {
+        return percentage;
+    }
+
+    public void setPercentage(double percentage) {
+        this.percentage = percentage;
+    }
+
+    public Integer getRankPosition() {
+        return rankPosition;
+    }
+
+    public void setRankPosition(Integer rankPosition) {
+        this.rankPosition = rankPosition;
+    }
+
+    public boolean isAllocated() {
+        return allocated;
+    }
+
+    public void setAllocated(boolean allocated) {
+        this.allocated = allocated;
+    }
+
+    public String getAllocatedSeat() {
+        return allocatedSeat;
+    }
+
+    public void setAllocatedSeat(String allocatedSeat) {
+        this.allocatedSeat = allocatedSeat;
     }
 }
