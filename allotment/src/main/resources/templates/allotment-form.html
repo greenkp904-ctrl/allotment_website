@@ -2,147 +2,276 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Allotment Form</title>
+    <title>Allotment Form - Sree Chitra Thirunal College of Engineering</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+          background: #f1f5f9;
+          font-family: 'Inter', sans-serif;
+        }
+        .form-container {
+          max-width: 900px;
+          margin: 3rem auto;
+          background: #fff;
+          padding: 2.5rem;
+          border-radius: 1rem;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        /* Style for disabled pre-filled fields */
+        .locked-field {
+            background-color: #e5e7eb !important; /* bg-gray-200 */
+            cursor: not-allowed;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex justify-center items-center">
-<div class="bg-white shadow-lg rounded-xl p-8 w-full max-w-3xl">
-    <h1 class="text-3xl font-bold text-indigo-600 text-center mb-6">Allotment Form</h1>
+<body>
 
-    <form th:action="@{/allotment-form}" method="post">
-        <input type="hidden" name="userId" th:value="${user.id}" />
+<div class="form-container">
+    <h1 class="text-3xl font-bold text-center text-blue-700 mb-6">Allotment Form</h1>
 
-        <!-- Personal Details -->
-        <div class="mt-6">
-            <h2 class="text-xl font-semibold text-indigo-500 mb-3">Personal Details</h2>
+    <div th:if="${errorMessage}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+        <span th:text="${errorMessage}"></span>
+    </div>
+    <div th:if="${successMessage}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+        <span th:text="${successMessage}"></span>
+    </div>
 
-            <input type="text" name="candidateName" placeholder="Candidate's Name"
-                   class="w-full border p-2 rounded mb-3" required />
+    <div th:if="${isFrozen}" class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6" role="alert">
+        <p class="font-bold">Application Locked</p>
+        <p th:text="${freezeMessage}">Your application is finalized and locked. No further changes are allowed.</p>
+        <p class="mt-2"><a th:href="@{/allotment/dashboard}" class="text-blue-600 hover:text-blue-800 font-semibold">View Dashboard</a></p>
+    </div>
 
-            <input type="text" name="fatherName" placeholder="Father's Name"
-                   class="w-full border p-2 rounded mb-3" required />
+    <form id="allotmentForm" th:action="@{/allotment/submitAllotment}" method="post" class="space-y-8" th:unless="${isFrozen}">
 
-            <input type="text" name="motherName" placeholder="Mother's Name"
-                   class="w-full border p-2 rounded mb-3" required />
+        <div>
+            <h2 class="text-xl font-semibold text-gray-800 mb-3">Select Form Type</h2>
+            <div class="flex items-center gap-6">
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" id="ksrtcCheckbox" name="formType" value="KSRTC" class="w-5 h-5 text-blue-600"
 
-            <textarea name="address" placeholder="Address"
-                      class="w-full border p-2 rounded mb-3" rows="3" required></textarea>
-        </div>
-
-        <!-- Educational Details -->
-        <div class="mt-8">
-            <h2 class="text-xl font-semibold text-indigo-500 mb-3">Educational Details</h2>
-
-            <input type="text" name="lastSchool" placeholder="Last School Studied"
-                   class="w-full border p-2 rounded mb-3" required />
-
-            <label class="block mb-4">
-                <span class="text-gray-700">Board of Study</span>
-                <select name="board" class="w-full border p-2 rounded mt-1" required>
-                    <option value="">Select Board</option>
-                    <option value="CBSE">CBSE</option>
-                    <option value="ICSE">ICSE</option>
-                    <option value="Kerala">Kerala Board</option>
-                </select>
-            </label>
-        </div>
-
-        <!-- Option Registration -->
-        <div class="mt-10">
-            <h2 class="text-xl font-semibold text-indigo-500 mb-3">Option Registration</h2>
-            <p class="text-gray-600 mb-3">Select your preferred branches (maximum 6 options, one per dropdown):</p>
-
-            <div class="grid grid-cols-1 gap-4">
-                <label>
-                    <span class="text-gray-700 font-medium">Option 1</span>
-                    <select name="option1" class="w-full border p-2 rounded mt-1" required>
-                        <option value="">Select Branch</option>
-                        <option value="Computer Science and Engineering">Computer Science and Engineering</option>
-                        <option value="Computer Science and Engineering (AI and ML)">Computer Science and Engineering (AI and ML)</option>
-                        <option value="Electronics and Communication Engineering">Electronics and Communication Engineering</option>
-                        <option value="Mechanical Engineering">Mechanical Engineering</option>
-                        <option value="Automobile Engineering">Automobile Engineering</option>
-                        <option value="Biotechnology Engineering">Biotechnology Engineering</option>
-                    </select>
+                           th:checked="${user.quotaType != null and #strings.contains(user.quotaType, 'KSRTC')}">
+                    <span>KSRTC Form</span>
                 </label>
+                <label class="flex items-center space-x-2">
 
-                <label>
-                    <span class="text-gray-700 font-medium">Option 2</span>
-                    <select name="option2" class="w-full border p-2 rounded mt-1">
-                        <option value="">Select Branch</option>
-                        <option value="Computer Science and Engineering">Computer Science and Engineering</option>
-                        <option value="Computer Science and Engineering (AI and ML)">Computer Science and Engineering (AI and ML)</option>
-                        <option value="Electronics and Communication Engineering">Electronics and Communication Engineering</option>
-                        <option value="Mechanical Engineering">Mechanical Engineering</option>
-                        <option value="Automobile Engineering">Automobile Engineering</option>
-                        <option value="Biotechnology Engineering">Biotechnology Engineering</option>
-                    </select>
-                </label>
 
-                <label>
-                    <span class="text-gray-700 font-medium">Option 3</span>
-                    <select name="option3" class="w-full border p-2 rounded mt-1">
-                        <option value="">Select Branch</option>
-                        <option value="Computer Science and Engineering">Computer Science and Engineering</option>
-                        <option value="Computer Science and Engineering (AI and ML)">Computer Science and Engineering (AI and ML)</option>
-                        <option value="Electronics and Communication Engineering">Electronics and Communication Engineering</option>
-                        <option value="Mechanical Engineering">Mechanical Engineering</option>
-                        <option value="Automobile Engineering">Automobile Engineering</option>
-                        <option value="Biotechnology Engineering">Biotechnology Engineering</option>
-                    </select>
-                </label>
+                    <input type="checkbox" id="nriCheckbox" name="formType" value="NRI" class="w-5 h-5 text-blue-600"
 
-                <label>
-                    <span class="text-gray-700 font-medium">Option 4</span>
-                    <select name="option4" class="w-full border p-2 rounded mt-1">
-                        <option value="">Select Branch</option>
-                        <option value="Computer Science and Engineering">Computer Science and Engineering</option>
-                        <option value="Computer Science and Engineering (AI and ML)">Computer Science and Engineering (AI and ML)</option>
-                        <option value="Electronics and Communication Engineering">Electronics and Communication Engineering</option>
-                        <option value="Mechanical Engineering">Mechanical Engineering</option>
-                        <option value="Automobile Engineering">Automobile Engineering</option>
-                        <option value="Biotechnology Engineering">Biotechnology Engineering</option>
-                    </select>
-                </label>
-
-                <label>
-                    <span class="text-gray-700 font-medium">Option 5</span>
-                    <select name="option5" class="w-full border p-2 rounded mt-1">
-                        <option value="">Select Branch</option>
-                        <option value="Computer Science and Engineering">Computer Science and Engineering</option>
-                        <option value="Computer Science and Engineering (AI and ML)">Computer Science and Engineering (AI and ML)</option>
-                        <option value="Electronics and Communication Engineering">Electronics and Communication Engineering</option>
-                        <option value="Mechanical Engineering">Mechanical Engineering</option>
-                        <option value="Automobile Engineering">Automobile Engineering</option>
-                        <option value="Biotechnology Engineering">Biotechnology Engineering</option>
-                    </select>
-                </label>
-
-                <label>
-                    <span class="text-gray-700 font-medium">Option 6</span>
-                    <select name="option6" class="w-full border p-2 rounded mt-1">
-                        <option value="">Select Branch</option>
-                        <option value="Computer Science and Engineering">Computer Science and Engineering</option>
-                        <option value="Computer Science and Engineering (AI and ML)">Computer Science and Engineering (AI and ML)</option>
-                        <option value="Electronics and Communication Engineering">Electronics and Communication Engineering</option>
-                        <option value="Mechanical Engineering">Mechanical Engineering</option>
-                        <option value="Automobile Engineering">Automobile Engineering</option>
-                        <option value="Biotechnology Engineering">Biotechnology Engineering</option>
-                    </select>
+                           th:checked="${user.quotaType != null and #strings.contains(user.quotaType, 'NRI')}">
+                    <span>NRI Form</span>
                 </label>
             </div>
-
-            <p class="text-sm text-gray-500 mt-2 italic">Each option should be unique. Please don’t repeat the same branch.</p>
+            <p id="formError" class="text-red-600 text-sm hidden mt-2">Please select at least one form type.</p>
         </div>
 
-        <!-- Submit Button -->
-        <div class="text-center mt-10">
+        <div id="commonDetails" class="hidden space-y-4">
+            <h2 class="text-xl font-semibold text-gray-800 mb-3">Candidate Information</h2>
+
+            <div class="grid grid-cols-2 gap-6">
+                <div>
+                    <label class="block font-semibold mb-2">Candidate Name</label>
+                    <input type="text" name="candidateName" th:value="${user.name}" readonly class="w-full p-2 border rounded-lg locked-field">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-2">Email</label>
+                    <input type="email" name="email" th:value="${user.email}" readonly class="w-full p-2 border rounded-lg locked-field">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-2">Father's Name</label>
+                    <input type="text" name="fatherName" th:value="${user.fatherName}" required class="w-full p-2 border rounded-lg">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-2">Mother's Name</label>
+                    <input type="text" name="motherName" th:value="${user.motherName}" required class="w-full p-2 border rounded-lg">
+                </div>
+            </div>
+
+            <div>
+                <label class="block font-semibold mb-2">Address</label>
+                <textarea name="address" rows="4" th:text="${user.address}" required class="w-full p-2 border rounded-lg resize-none"></textarea>
+            </div>
+
+            <div class="grid grid-cols-2 gap-6">
+                <div>
+                    <label class="block font-semibold mb-2">Father's Occupation</label>
+                    <input type="text" name="fatherOccupation" th:value="${user.fatherOccupation}" required class="w-full p-2 border rounded-lg">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-2">Mother's Occupation</label>
+                    <input type="text" name="motherOccupation" th:value="${user.motherOccupation}" required class="w-full p-2 border rounded-lg">
+                </div>
+            </div>
+
+            <div>
+                <label class="block font-semibold mb-2">Last School Studied</label>
+                <input type="text" name="lastSchool" th:value="${user.lastSchool}" required class="w-full p-2 border rounded-lg">
+            </div>
+        </div>
+
+        <div id="nriFields" class="hidden space-y-4">
+            <h2 class="text-xl font-semibold text-gray-800 mb-3">NRI Quota Details</h2>
+            <div class="grid grid-cols-2 gap-6">
+                <div>
+                    <label class="block font-semibold mb-2">Parent Applicable for NRI Quota</label>
+                    <input type="text" name="nriParentName" th:value="${nriForm.nriParentName}" class="w-full p-2 border rounded-lg">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-2">Passport Number</label>
+                    <input type="text" name="passportNumber" th:value="${nriForm.sponsorPassport}" class="w-full p-2 border rounded-lg">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-2">Residential ID</label>
+                    <input type="text" name="residentialId" th:value="${nriForm.residentialId}" class="w-full p-2 border rounded-lg">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-2">Country of Residence</label>
+                    <input type="text" name="country" th:value="${nriForm.country}" class="w-full p-2 border rounded-lg">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-6">
+                <div>
+                    <label class="block font-semibold mb-2">Mathematics Marks</label>
+                    <input type="number" name="mathsMarks" th:value="${nriForm.mathsMarks}" min="0" max="100" class="w-full p-2 border rounded-lg">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-2">Physics Marks</label>
+                    <input type="number" name="physicsMarks" th:value="${nriForm.physicsMarks}" min="0" max="100" class="w-full p-2 border rounded-lg">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-2">Chemistry Marks</label>
+                    <input type="number" name="chemistryMarks" th:value="${nriForm.chemistryMarks}" min="0" max="100" class="w-full p-2 border rounded-lg">
+                </div>
+            </div>
+        </div>
+
+        <div id="ksrtcFields" class="hidden space-y-4">
+            <h2 class="text-xl font-semibold text-gray-800 mb-3">KSRTC Quota Details</h2>
+
+            <div class="grid grid-cols-2 gap-6">
+                <div>
+                    <label class="block font-semibold mb-2">Parent Applicable for KSRTC Quota</label>
+                    <input type="text" name="ksrtcParentName" th:value="${ksrtcForm.ksrtcParentName}" class="w-full p-2 border rounded-lg">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-2">KSRTC ID Number</label>
+                    <input type="text" name="ksrtcId" th:value="${ksrtcForm.ksrtcEmployeeId}" class="w-full p-2 border rounded-lg">
+                </div>
+            </div>
+
+            <div>
+                <label class="block font-semibold mb-2">KEAM Rank</label>
+                <input type="number" name="keamRank" th:value="${ksrtcForm.keamRank}" class="w-full p-2 border rounded-lg">
+            </div>
+        </div>
+
+        <div id="optionSection" class="hidden space-y-4">
+            <h2 class="text-xl font-semibold text-gray-800 mb-3">Branch Preferences (Select up to 6)</h2>
+            <div class="space-y-3">
+                <div th:each="i : ${#numbers.sequence(1,6)}">
+                    <label class="block font-medium mb-1">Option [[${i}]]</label>
+                    <select name="options" class="branch-select w-full p-2 border rounded-lg" required>
+                        <option value="" disabled selected>Select Branch</option>
+                        <option th:each="branch : ${branches}"
+                                th:value="${branch}"
+                                th:text="${branch}"
+                                th:selected="${#lists.size(optionRegistrationList) >= i and #lists.get(optionRegistrationList, i-1) == branch}"></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div id="submitSection" class="text-center hidden">
             <button type="submit"
-                    class="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700">
-                Submit
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold mt-6">
+                Submit Allotment Form
             </button>
         </div>
     </form>
 </div>
+
+<script>
+    const ksrtcCheckbox = document.getElementById('ksrtcCheckbox');
+    const nriCheckbox = document.getElementById('nriCheckbox');
+    const commonDetails = document.getElementById('commonDetails');
+    const nriFields = document.getElementById('nriFields');
+    const ksrtcFields = document.getElementById('ksrtcFields');
+    const optionSection = document.getElementById('optionSection');
+    const submitSection = document.getElementById('submitSection');
+    const formError = document.getElementById('formError');
+
+    // Function to check initial state and display correct sections
+    function initializeFormDisplay() {
+        // Use the initial checked state set by Thymeleaf
+        const ksrtc = ksrtcCheckbox.checked;
+        const nri = nriCheckbox.checked;
+
+        if (ksrtc || nri) {
+            commonDetails.classList.remove('hidden');
+            optionSection.classList.remove('hidden');
+            submitSection.classList.remove('hidden');
+        }
+
+        nri ? nriFields.classList.remove('hidden') : nriFields.classList.add('hidden');
+        ksrtc ? ksrtcFields.classList.remove('hidden') : ksrtcFields.classList.add('hidden');
+    }
+
+    // Function to update display on checkbox change
+    function updateFormDisplay() {
+        const ksrtc = ksrtcCheckbox.checked;
+        const nri = nriCheckbox.checked;
+
+        if (!ksrtc && !nri) {
+            formError.classList.remove('hidden');
+            [commonDetails, nriFields, ksrtcFields, optionSection, submitSection].forEach(sec => sec.classList.add('hidden'));
+            return;
+        }
+
+        formError.classList.add('hidden');
+        commonDetails.classList.remove('hidden');
+        optionSection.classList.remove('hidden');
+        submitSection.classList.remove('hidden');
+        nri ? nriFields.classList.remove('hidden') : nriFields.classList.add('hidden');
+        ksrtc ? ksrtcFields.classList.remove('hidden') : ksrtcFields.classList.add('hidden');
+    }
+
+    ksrtcCheckbox.addEventListener('change', updateFormDisplay);
+    nriCheckbox.addEventListener('change', updateFormDisplay);
+
+    // Initial check when the page loads
+    document.addEventListener('DOMContentLoaded', initializeFormDisplay);
+
+
+    // Prevent duplicate selections in branch dropdowns
+    const selects = document.querySelectorAll('.branch-select');
+    selects.forEach(select => {
+      // Trigger change event once to disable options that are pre-filled
+      select.dispatchEvent(new Event('change'));
+
+      select.addEventListener('change', () => {
+        const selectedValues = Array.from(selects).map(s => s.value).filter(v => v); // filter(v => v) removes the empty "Select Branch" option
+
+        selects.forEach(s => {
+          Array.from(s.options).forEach(opt => {
+            if (opt.value && selectedValues.includes(opt.value) && s.value !== opt.value) {
+              opt.disabled = true;
+              opt.style.color = '#ccc'; // Optional styling for disabled options
+            } else {
+              opt.disabled = false;
+              opt.style.color = 'inherit';
+            }
+          });
+        });
+      });
+    });
+
+    // Run the option disabling logic one more time after all options are loaded and pre-selected
+    document.addEventListener('DOMContentLoaded', () => {
+        const initialEvent = new Event('change');
+        selects.forEach(select => select.dispatchEvent(initialEvent));
+    });
+</script>
+
 </body>
 </html>

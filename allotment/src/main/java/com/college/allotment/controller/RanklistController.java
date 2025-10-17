@@ -14,16 +14,20 @@ public class RanklistController {
         this.allotmentService = allotmentService;
     }
 
+    // --- KSRTC Ranklist View ---
     @GetMapping("/ranklist/ksrtc")
     public String viewKsrtcRanklist(Model model) {
-        model.addAttribute("ranklist", allotmentService.generateKsrtcRanklist());
+        // CORRECTED: Calling the method that generates, saves, and returns the sorted list.
+        model.addAttribute("ranklist", allotmentService.generateAndSaveKsrtcRanklist());
         model.addAttribute("type", "KSRTC");
-        return "ranklist";
+        return "ranklist"; // Renders the Thymeleaf template named 'ranklist.html'
     }
 
+    // --- NRI Ranklist View ---
     @GetMapping("/ranklist/nri")
     public String viewNriRanklist(Model model) {
-        model.addAttribute("ranklist", allotmentService.generateNriRanklist());
+        // CORRECTED: Calling the method that generates, saves, and returns the sorted list.
+        model.addAttribute("ranklist", allotmentService.generateAndSaveNriRanklist());
         model.addAttribute("type", "NRI");
         return "ranklist";
     }

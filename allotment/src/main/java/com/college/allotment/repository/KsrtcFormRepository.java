@@ -10,11 +10,14 @@ import java.util.Optional;
 @Repository
 public interface KsrtcFormRepository extends JpaRepository<KsrtcForm, Long> {
 
-    // 🔍 Find a form by user ID
+    // Find a form by user ID
     Optional<KsrtcForm> findByUserId(Long userId);
 
-    // 📋 Get all KSRTC forms ordered by KEAM rank (ascending)
+    // 📋 Get all KSRTC forms ordered by KEAM rank (ascending) - Useful for initial processing
     List<KsrtcForm> findAllByOrderByKeamRankAsc();
+
+    // 🏆 Get all KSRTC forms ordered by the final calculated rank position (Used for displaying the final ranklist)
+    List<KsrtcForm> findAllByOrderByKsrtcRankPositionAsc();
 
     // 🧾 Get all allocated forms
     List<KsrtcForm> findByAllocatedTrue();

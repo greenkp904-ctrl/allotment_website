@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - Allotment Control</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #f1f5f9; }
+        .dashboard-container { max-width: 1400px; margin: 2rem auto; padding: 2rem; background: #fff; border-radius: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .data-table th, .data-table td { padding: 0.75rem; border-bottom: 1px solid #e2e8f0; text-align: left; font-size: 0.875rem; }
+        .data-table th { background-color: #f8fafc; font-weight: 600; color: #334155; }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <header class="flex justify-between items-center mb-8 pb-4 border-b">
+        <h1 class="text-4xl font-extrabold text-indigo-700">⚙️ Administrator Control Panel</h1>
+        <div class="flex space-x-4">
+            <a href="#" class="text-indigo-600 hover:text-indigo-800 font-medium">System Logs</a>
+            <a th:href="@{/admin/logout}" class="text-red-600 hover:text-red-800 font-medium">Logout</a>
+        </div>
+    </header>
+
+    <div th:if="${successMessage}" class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg" role="alert">
+        <span th:text="${successMessage}"></span>
+    </div>
+    <div th:if="${errorMessage}" class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg" role="alert">
+        <span th:text="${errorMessage}"></span>
+    </div>
+
+    <section class="mb-12 p-6 bg-yellow-50 border-l-4 border-red-500 rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold text-red-700 mb-4">Final Allotment Action</h2>
+        <p class="text-gray-700 mb-4">
+            Use the buttons below to manage the allocation cycle. The **Publish Results** action is permanent and makes all generated results visible to students.
+        </p>
+
+        <div class="flex space-x-6">
+            <form th:action="@{/admin/run-allotment-process}" method="post">
+                <button type="submit"
+                        onclick="return confirm('WARNING: This will run the allocation algorithm, overwriting any previous unpublished results. Continue?')"
+                        class="px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700 transition duration-150">
+                    1. Run Allocation Process
+                </button>
+            </form>
+
+            <form th:action="@{/admin/publish-all-results}" method="post">
+                <button type="submit"
+                        onclick="return confirm('🛑 CRITICAL ACTION: Are you sure you want to PUBLISH ALL ALLOTMENT RESULTS? This is irreversible and notifies all students.')"
+                        class="px-6 py-3 bg-red-600 text-white font-semibold rounded-lg shadow-xl hover:bg-red-700 transition duration-150">
+                    2. Publish Allotment Results
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">System Overview</h2>
+        <div class="grid grid-cols-3 gap-6 text-center">
+            <div class="p-4 bg-blue-100 rounded-lg shadow-md">
+                <p class="text-4xl font-extrabold text-blue-700" th:text="${candidateUsers.size()}">150</p>
+                <p class="text-gray-600">Total Candidate Users</p>
+            </div>
+            <div class="p-4 bg-green-100 rounded-lg shadow-md">
+                <p class="text-4xl font-extrabold text-green-700" th:text="${ksrtcForms.size()}">50</p>
+                <p class="text-gray-600">KSRTC Forms Submitted</p>
+            </div>
+            <div class="p-4 bg-yellow-100 rounded-lg shadow-md">
+                <p class="text-4xl font-extrabold text-yellow-700" th:text="${nriForms.size()}">25</p>
+                <p class="text-gray-600">NRI Forms Submitted</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="mb-4 border-b border-gray-200">
+        <ul class="flex flex-wrap -mb-px" id="myTab" role="tablist">
+            <li class="mr-2" role="presentation"><button class="inline-block py-2 px-4 text-sm font-medium text-indigo-600 border-b-2 border-indigo-600 rounded-t-lg active" id="candidate-tab" data-target="candidate-data" type="button" role="tab" aria-selected="true">Candidate Users</button></li>
+
+            <li class="mr-2" role="presentation"><button class="inline-block py-2 px-4 text-sm font-medium text-gray-500 hover:text-gray-600 hover:border-gray-300 rounded-t-lg" id="admin-tab" data-target="admin-data" type="button" role="tab" aria-selected="false">Admin Users</button></li>
+
+            <li class="mr-2" role="presentation"><button class="inline-block py-2 px-4 text-sm font-medium text-gray-500 hover:text-gray-600 hover:border-gray-300 rounded-t-lg" id="ksrtc-tab" data-target="ksrtc-data" type="button" role="tab" aria-selected="false">KSRTC Data</button></li>
+            <li class="mr-2" role="presentation"><button class="inline-block py-2 px-4 text-sm font-medium text-gray-500 hover:text-gray-600 hover:border-gray-300 rounded-t-lg" id="nri-tab" data-target="nri-data" type="button" role="tab" aria-selected="false">NRI Data</button></li>
+            <li class="mr-2" role="presentation"><button class="inline-block py-2 px-4 text-sm font-medium text-gray-500 hover:text-gray-600 hover:border-gray-300 rounded-t-lg" id="results-tab" data-target="results-data" type="button" role="tab" aria-selected="false">All Results</button></li>
+        </ul>
+    </div>
+
+    <div id="tab-content">
+        <div class="p-4 rounded-lg bg-gray-50" id="candidate-data" role="tabpanel">
+            <h3 class="text-xl font-semibold mb-4">Registered Candidate List</h3>
+            <table class="data-table w-full">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Application No.</th>
+                    <th>Quota</th>
+                    <th>Submitted?</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user : ${candidateUsers}">
+                    <td th:text="${user.id}">1</td>
+                    <td th:text="${user.name}">John Doe</td>
+                    <td th:text="${user.email}">john@example.com</td>
+                    <td th:text="${user.applicationNumber}">APP1001</td>
+                    <td th:text="${user.quotaType}">BOTH</td>
+                    <td th:text="${user.formSubmitted} ? '✅ Yes' : '❌ No'"></td>
+                    <td>
+                        <form th:action="@{/admin/reset-password}" method="post" class="inline-block">
+                            <input type="hidden" name="email" th:value="${user.email}" />
+                            <input type="hidden" name="newPassword" value="Welcome123" />
+                            <button type="submit"
+                                    onclick="return confirm('Confirm reset password for ' + [[${user.email}]] + ' to default?')"
+                                    class="text-sm text-red-600 hover:text-red-800 underline">
+                                Reset Pass
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="hidden p-4 rounded-lg bg-gray-50" id="admin-data" role="tabpanel">
+            <h3 class="text-xl font-semibold mb-4 text-red-700">System Administrator List</h3>
+            <table class="data-table w-full">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Application No.</th>
+                    <th>Role</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="adminUser : ${adminUsers}" class="bg-red-50">
+                    <td th:text="${adminUser.id}">99</td>
+                    <td th:text="${adminUser.name}" class="font-bold text-red-600">System Admin</td>
+                    <td th:text="${adminUser.email}">admin@college.edu</td>
+                    <td th:text="${adminUser.applicationNumber}">ADMIN-001</td>
+                    <td th:text="${adminUser.role}">ROLE_ADMIN</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="hidden p-4 rounded-lg bg-gray-50" id="ksrtc-data" role="tabpanel">
+            <h3 class="text-xl font-semibold mb-4">KSRTC Form Submissions</h3>
+            <table class="data-table w-full">
+                <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>Application No.</th>
+                    <th>KEAM Rank</th>
+                    <th>Employee ID</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="form : ${ksrtcForms}">
+                    <td th:text="${form.user.id}">1</td>
+                    <td th:text="${form.user.applicationNumber}">APP1001</td>
+                    <td th:text="${form.keamRank}">1500</td>
+                    <td th:text="${form.ksrtcEmployeeId}">KSRTC/12345</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="hidden p-4 rounded-lg bg-gray-50" id="nri-data" role="tabpanel">
+            <h3 class="text-xl font-semibold mb-4">NRI Form Submissions</h3>
+            <table class="data-table w-full">
+                <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>Application No.</th>
+                    <th>Maths</th>
+                    <th>Physics</th>
+                    <th>Chemistry</th>
+                    <th>Sponsor Passport</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="form : ${nriForms}">
+                    <td th:text="${form.user.id}">2</td>
+                    <td th:text="${form.user.applicationNumber}">APP1002</td>
+                    <td th:text="${form.mathsMarks}">95</td>
+                    <td th:text="${form.physicsMarks}">92</td>
+                    <td th:text="${form.chemistryMarks}">90</td>
+                    <td th:text="${form.sponsorPassport}">S00000001</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="hidden p-4 rounded-lg bg-gray-50" id="results-data" role="tabpanel">
+            <h3 class="text-xl font-semibold mb-4">Allotment Results (Raw Data)</h3>
+            <table class="data-table w-full">
+                <thead>
+                <tr>
+                    <th>Result ID</th>
+                    <th>Application No.</th>
+                    <th>Allotted Branch</th>
+                    <th>Allotment Quota</th>
+                    <th>Published?</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="result : ${results}">
+                    <td th:text="${result.id}">1</td>
+                    <td th:text="${result.user.applicationNumber}">APP1001</td>
+                    <td th:text="${result.allottedBranch}">CSE</td>
+                    <td th:text="${result.allotmentQuota}">KSRTC</td>
+                    <td th:text="${result.published} ? '✅ Yes' : '❌ No'"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Simple Tab Switching Logic
+    document.addEventListener('DOMContentLoaded', () => {
+        const tabs = document.querySelectorAll('#myTab button');
+        const contentSections = document.querySelectorAll('#tab-content > div');
+
+        function switchTab(targetId) {
+            tabs.forEach(tab => {
+                const isActive = tab.getAttribute('data-target') === targetId;
+                tab.classList.toggle('active', isActive);
+                tab.classList.toggle('text-indigo-600', isActive);
+                tab.classList.toggle('border-indigo-600', isActive);
+                tab.classList.toggle('text-gray-500', !isActive);
+                tab.classList.toggle('hover:text-gray-600', !isActive);
+                tab.classList.toggle('hover:border-gray-300', !isActive);
+            });
+
+            contentSections.forEach(section => {
+                section.classList.toggle('hidden', section.id !== targetId);
+            });
+        }
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                switchTab(tab.getAttribute('data-target'));
+            });
+        });
+
+        // Initialize the first tab (Candidate Users)
+        switchTab('candidate-data');
+    });
+</script>
+
+</body>
+</html>

@@ -10,32 +10,29 @@ public class KsrtcForm {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // ---------- User Relationship ----------
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    // 🔑 CRITICAL FIX APPLIED HERE: Added nullable=false and unique=true
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, unique = true)
     private User user;
 
-    // ---------- Personal Details ----------
-    private String candidateName;
-    private String fatherName;
-    private String motherName;
-    private String address;
+    // ---------- KSRTC Quota Specific Details from HTML Form ----------
+    private String ksrtcParentName;
 
-    // ---------- Educational Details ----------
-    private String lastSchool;
-    private String board; // CBSE, ICSE, Kerala
-    private int keamRank;
+    // 🚩 FIX: Renamed from 'ksrtcId' to 'ksrtcEmployeeId' to match the Controller.
+    private String ksrtcEmployeeId;
 
-    // ---------- KSRTC Quota Specific ----------
-    private String ksrtcId;
-    private String busRoute;
+    private Integer keamRank;
 
     // ---------- Ranking / Allotment Info ----------
-    private Integer rankPosition; // generated rank position in KSRTC list
-    private boolean allocated = false; // true if seat allocated
-    private String allocatedSeat; // optional: store seat/course name if applicable
+    private Integer ksrtcRankPosition;
 
-    // ---------- Getters & Setters ----------
+    @Column(nullable = false, columnDefinition = "bit(1) default 0")
+    private boolean allocated = false;
+
+    private String allocatedSeat;
+
+    // --- Getters & Setters ---
+
     public Long getId() {
         return id;
     }
@@ -52,84 +49,38 @@ public class KsrtcForm {
         this.user = user;
     }
 
-    public String getCandidateName() {
-        return candidateName;
+    public String getKsrtcParentName() {
+        return ksrtcParentName;
     }
 
-    public void setCandidateName(String candidateName) {
-        this.candidateName = candidateName;
+    public void setKsrtcParentName(String ksrtcParentName) {
+        this.ksrtcParentName = ksrtcParentName;
     }
 
-    public String getFatherName() {
-        return fatherName;
+    // 🚩 FIX: Setter renamed to match the new field name.
+    public String getKsrtcEmployeeId() {
+        return ksrtcEmployeeId;
     }
 
-    public void setFatherName(String fatherName) {
-        this.fatherName = fatherName;
+    // 🚩 FIX: Getter renamed to match the new field name.
+    public void setKsrtcEmployeeId(String ksrtcEmployeeId) {
+        this.ksrtcEmployeeId = ksrtcEmployeeId;
     }
 
-    public String getMotherName() {
-        return motherName;
-    }
-
-    public void setMotherName(String motherName) {
-        this.motherName = motherName;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getLastSchool() {
-        return lastSchool;
-    }
-
-    public void setLastSchool(String lastSchool) {
-        this.lastSchool = lastSchool;
-    }
-
-    public String getBoard() {
-        return board;
-    }
-
-    public void setBoard(String board) {
-        this.board = board;
-    }
-
-    public int getKeamRank() {
+    public Integer getKeamRank() {
         return keamRank;
     }
 
-    public void setKeamRank(int keamRank) {
+    public void setKeamRank(Integer keamRank) {
         this.keamRank = keamRank;
     }
 
-    public String getKsrtcId() {
-        return ksrtcId;
+    public Integer getKsrtcRankPosition() {
+        return ksrtcRankPosition;
     }
 
-    public void setKsrtcId(String ksrtcId) {
-        this.ksrtcId = ksrtcId;
-    }
-
-    public String getBusRoute() {
-        return busRoute;
-    }
-
-    public void setBusRoute(String busRoute) {
-        this.busRoute = busRoute;
-    }
-
-    public Integer getRankPosition() {
-        return rankPosition;
-    }
-
-    public void setRankPosition(Integer rankPosition) {
-        this.rankPosition = rankPosition;
+    public void setKsrtcRankPosition(Integer ksrtcRankPosition) {
+        this.ksrtcRankPosition = ksrtcRankPosition;
     }
 
     public boolean isAllocated() {

@@ -10,35 +10,35 @@ public class NriForm {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // ---------- User Relationship ----------
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    // 🔑 CRITICAL FIX APPLIED HERE: Added nullable=false and unique=true
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, unique = true)
     private User user;
 
-    // ---------- Personal Details ----------
-    private String candidateName;
-    private String fatherName;
-    private String motherName;
-    private String address;
+    // ---------- NRI Quota Specific Details from HTML Form ----------
+    private String nriParentName;
 
-    // ---------- Educational Details ----------
-    private String lastSchool;
-    private String board; // CBSE, ICSE, Kerala
-    private int physicsMarks;
-    private int chemistryMarks;
-    private int mathMarks;
+    // 🚩 FIX: Renamed from 'passportNumber' to 'sponsorPassport' to match the Controller.
+    private String sponsorPassport;
 
-    // ---------- NRI Quota Specific ----------
-    private String passportNumber;
+    private String residentialId;
     private String country;
 
-    // ---------- Ranking & Allotment ----------
-    private double percentage;      // total % based on (physics+chemistry+math)/600 * 100
-    private Integer rankPosition;   // rank number in NRI list
-    private boolean allocated = false;
-    private String allocatedSeat;   // optional seat/course info
+    // Academic Marks (Used for ranking)
+    private Integer mathsMarks;
+    private Integer physicsMarks;
+    private Integer chemistryMarks;
 
-    // ---------- Getters & Setters ----------
+    // Calculated fields
+    private Integer totalMarks;
+
+    // ---------- Ranking / Allotment Info ----------
+    private Integer nriRankPosition;
+    private boolean allocated = false;
+    private String allocatedSeat;
+
+    // --- Getters & Setters ---
+
     public Long getId() {
         return id;
     }
@@ -55,84 +55,30 @@ public class NriForm {
         this.user = user;
     }
 
-    public String getCandidateName() {
-        return candidateName;
+    public String getNriParentName() {
+        return nriParentName;
     }
 
-    public void setCandidateName(String candidateName) {
-        this.candidateName = candidateName;
+    public void setNriParentName(String nriParentName) {
+        this.nriParentName = nriParentName;
     }
 
-    public String getFatherName() {
-        return fatherName;
+    // 🚩 FIX: Getter renamed.
+    public String getSponsorPassport() {
+        return sponsorPassport;
     }
 
-    public void setFatherName(String fatherName) {
-        this.fatherName = fatherName;
+    // 🚩 FIX: Setter renamed.
+    public void setSponsorPassport(String sponsorPassport) {
+        this.sponsorPassport = sponsorPassport;
     }
 
-    public String getMotherName() {
-        return motherName;
+    public String getResidentialId() {
+        return residentialId;
     }
 
-    public void setMotherName(String motherName) {
-        this.motherName = motherName;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getLastSchool() {
-        return lastSchool;
-    }
-
-    public void setLastSchool(String lastSchool) {
-        this.lastSchool = lastSchool;
-    }
-
-    public String getBoard() {
-        return board;
-    }
-
-    public void setBoard(String board) {
-        this.board = board;
-    }
-
-    public int getPhysicsMarks() {
-        return physicsMarks;
-    }
-
-    public void setPhysicsMarks(int physicsMarks) {
-        this.physicsMarks = physicsMarks;
-    }
-
-    public int getChemistryMarks() {
-        return chemistryMarks;
-    }
-
-    public void setChemistryMarks(int chemistryMarks) {
-        this.chemistryMarks = chemistryMarks;
-    }
-
-    public int getMathMarks() {
-        return mathMarks;
-    }
-
-    public void setMathMarks(int mathMarks) {
-        this.mathMarks = mathMarks;
-    }
-
-    public String getPassportNumber() {
-        return passportNumber;
-    }
-
-    public void setPassportNumber(String passportNumber) {
-        this.passportNumber = passportNumber;
+    public void setResidentialId(String residentialId) {
+        this.residentialId = residentialId;
     }
 
     public String getCountry() {
@@ -143,20 +89,44 @@ public class NriForm {
         this.country = country;
     }
 
-    public double getPercentage() {
-        return percentage;
+    public Integer getMathsMarks() {
+        return mathsMarks;
     }
 
-    public void setPercentage(double percentage) {
-        this.percentage = percentage;
+    public void setMathsMarks(Integer mathsMarks) {
+        this.mathsMarks = mathsMarks;
     }
 
-    public Integer getRankPosition() {
-        return rankPosition;
+    public Integer getPhysicsMarks() {
+        return physicsMarks;
     }
 
-    public void setRankPosition(Integer rankPosition) {
-        this.rankPosition = rankPosition;
+    public void setPhysicsMarks(Integer physicsMarks) {
+        this.physicsMarks = physicsMarks;
+    }
+
+    public Integer getChemistryMarks() {
+        return chemistryMarks;
+    }
+
+    public void setChemistryMarks(Integer chemistryMarks) {
+        this.chemistryMarks = chemistryMarks;
+    }
+
+    public Integer getTotalMarks() {
+        return totalMarks;
+    }
+
+    public void setTotalMarks(Integer totalMarks) {
+        this.totalMarks = totalMarks;
+    }
+
+    public Integer getNriRankPosition() {
+        return nriRankPosition;
+    }
+
+    public void setNriRankPosition(Integer nriRankPosition) {
+        this.nriRankPosition = nriRankPosition;
     }
 
     public boolean isAllocated() {

@@ -1,6 +1,6 @@
 package com.college.allotment.repository;
 
-import com.college.allotment.model.OptionRegistration;
+import com.college.allotment.model.OptionRegistration; // ✅ correct import
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
